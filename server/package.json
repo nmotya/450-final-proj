@@ -1,0 +1,22 @@
+{
+  "name": "450-final-proj",
+  "version": "1.0.0",
+  "description": "Final project for CIS 450",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nmotya/450-final-proj.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nmotya/450-final-proj/issues"
+  },
+  "homepage": "https://github.com/nmotya/450-final-proj#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
