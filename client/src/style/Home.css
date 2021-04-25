@@ -1,0 +1,25 @@
+#homeWrapper {
+    background-image: url("../images/building.jpeg");
+    height: 50rem;
+    background-size:cover;
+    padding-top: 7.5rem;
+    width: 90rem;
+}
+
+#homeTextWrapper {
+    padding-top: 1rem;
+    width: 60rem;
+    right: 50%; 
+    margin-right: -30rem; 
+    text-align: center;
+    background: rgba(0,0,0,0.5);
+    color: white;
+    position: fixed;
+}
+
+#homeParaDiv {
+    text-align: left;
+    width: 75%;
+    margin: auto;
+    margin-top: 3rem;
+}

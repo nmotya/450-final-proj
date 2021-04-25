@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 
 app.get('/test', routes.test);
 
-app.get('/test2', routes.test2);
+app.get('/test1', routes.test1);
 
 app.listen(port, () => {
   console.log(`App ruuning on port ${port}.`)

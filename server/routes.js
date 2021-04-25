@@ -21,7 +21,7 @@ const test = (req, res) => {
     const query = `
       SELECT *
       FROM Source
-    `;
+      `;
   
     connectionContract.query(query, (err, rows, fields) => {
       if (err) console.log(err);
@@ -31,5 +31,5 @@ const test = (req, res) => {
 
 module.exports = {
     test: test,
-    test2: test2
+    test1: test1
 };
