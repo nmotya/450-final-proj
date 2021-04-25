@@ -2,6 +2,7 @@ const config = require('./db-config.js');
 const mysql = require('mysql');
 
 config.connectionLimit = 10;
+//Use connectionContract when querying contracts, assistance when querying assistance. See test examples below.
 const connectionContract = mysql.createPool(config.Contracts);
 const connectionAssistance = mysql.createPool(config.Assistance);
 
