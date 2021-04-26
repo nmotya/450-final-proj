@@ -2,15 +2,10 @@ import '../style/Home.css';
 import React from 'react';
 import Navbar from './Navbar'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import building from '../images/building.jpeg'
-
 
 export default class Home extends React.Component {
-	constructor(props) {
-		super(props);
-	};
-	
 	render() {
+		document.body.classList.add('backgroundImg');
 		return (
             <>
                 <Navbar />

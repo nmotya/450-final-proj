@@ -1,12 +1,10 @@
-#homeWrapper {
-    background-image: url("../images/building.jpeg");
-    height: 50rem;
-    background-size:cover;
-    padding-top: 7.5rem;
-    width: 90rem;
+.backgroundImg {
+    background: url("../images/building.jpeg") no-repeat center center fixed; 
+    background-size: cover;
 }
 
 #homeTextWrapper {
+    margin-top: 4rem;
     padding-top: 1rem;
     width: 60rem;
     right: 50%; 
