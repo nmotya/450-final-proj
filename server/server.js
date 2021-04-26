@@ -9,7 +9,6 @@ app.use(cors({credentials: true, origin: `http://localhost:${port}`}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
-
 app.get('/test', routes.test);
 
 app.get('/test1', routes.test1);
