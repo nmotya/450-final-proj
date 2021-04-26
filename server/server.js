@@ -14,6 +14,14 @@ app.get('/test', routes.test);
 
 app.get('/test1', routes.test1);
 
+app.get('/contractSpendingAcrossYears/:year1/:year2', routes.contractSpendingAcrossYears);
+
+app.get('/contractSpendingAcrossYearsSum/:year1/:year2', routes.contractSpendingAcrossYearsSum);
+
+app.get('/contractAgencySpending/:agency', routes.contractAgencySpending);
+
+app.get('/contractAgencySpendingYear/:agency/:year1/:year2', routes.contractAgencySpendingYear);
+
 app.listen(port, () => {
   console.log(`App ruuning on port ${port}.`)
 });
