@@ -21,6 +21,10 @@ app.get('/contractAgencySpending/:agency', routes.contractAgencySpending);
 
 app.get('/contractAgencySpendingYear/:agency/:year1/:year2', routes.contractAgencySpendingYear);
 
+app.get('/contractForeignSpending/', routes.contractForeignSpending);
+
+app.get('/contractStateSpending/', routes.contractStateSpending);
+
 app.listen(port, () => {
   console.log(`App running on port ${port}`)
 });
