@@ -143,6 +143,24 @@ const contractLargestStateAward = (req, res) => {
     });
   }; 
 
+const contractCovidAward = (req, res) => {
+    const query = `
+      WITH covidAwards AS(
+      SELECT *
+      FROM Awards a JOIN Recipient r ON a.recipient_duns_award = r.recipient_duns
+      WHERE r.organizational_type = 'CORPORATE NOT TAX EXEMPT' AND  a.action_date LIKE '3%' AND  a.action_date_fiscal_year = 2020
+      )
+      SELECT DISTINCT recipient_name
+      FROM covidAwards
+      WHERE potential_total_value_of_award >= 100000 AND recipient_country_name = 'United States'
+      `;
+  
+    connectionContract.query(query, (err, rows, fields) => {
+      if (err) console.log(err);
+      else res.json(rows);
+    });
+  }; 
+
 module.exports = {
     test: test,
     test1: test1,
@@ -152,6 +170,7 @@ module.exports = {
     contractAgencySpendingYear: contractAgencySpendingYear,
     contractForeignSpending: contractForeignSpending,
     contractStateSpending: contractStateSpending,
-    contractLargestStateAward: contractLargestStateAward
+    contractLargestStateAward: contractLargestStateAward,
+    contractCovidAward: contractCovidAward
     
 };
