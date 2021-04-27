@@ -109,6 +109,7 @@ const contractForeignSpending = (req, res) => {
     });
   };
 
+
 const contractStateSpending = (req, res) => {
     const query = `
       SELECT sum(a.potential_total_value_of_award) as sum, r.recipient_state_code
@@ -116,6 +117,24 @@ const contractStateSpending = (req, res) => {
       WHERE r.recipient_country_name= 'UNITED STATES'
       GROUP BY r.recipient_state_code
       ORDER by sum desc
+      `;
+  
+    connectionContract.query(query, (err, rows, fields) => {
+      if (err) console.log(err);
+      else res.json(rows);
+    });
+  }; 
+
+const contractLargestStateAward = (req, res) => {
+    const agency = req.params.agency;
+    const query = `
+      WITH epaAwards AS (
+      SELECT max(a.potential_total_value_of_award) as max, a.recipient_duns_award
+      FROM Awards a JOIN Source s ON a.awarding_agency_code_award = s.awarding_agency_code
+      WHERE s.awarding_agency_name like '${agency}%'
+      )
+      SELECT distinct r.recipient_state_code
+      FROM epaAwards e JOIN Recipient r ON e.recipient_duns_award = r.recipient_duns
       `;
   
     connectionContract.query(query, (err, rows, fields) => {
@@ -132,6 +151,7 @@ module.exports = {
     contractSpendingAcrossYearsSum: contractSpendingAcrossYearsSum, 
     contractAgencySpendingYear: contractAgencySpendingYear,
     contractForeignSpending: contractForeignSpending,
-    contractStateSpending: contractStateSpending
+    contractStateSpending: contractStateSpending,
+    contractLargestStateAward: contractLargestStateAward
     
 };
