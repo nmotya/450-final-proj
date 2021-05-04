@@ -6,29 +6,7 @@ config.connectionLimit = 10;
 const connectionContract = mysql.createPool(config.Contracts);
 const connectionAssistance = mysql.createPool(config.Assistance);
 
-const test = (req, res) => {
-    const query = `
-      SELECT *
-      FROM state
-    `;
-  
-    connectionAssistance.query(query, (err, rows, fields) => {
-      if (err) console.log(err);
-      else res.json(rows);
-    });
-  };
 
-  const test1 = (req, res) => {
-    const query = `
-      SELECT *
-      FROM Source
-      `;
-  
-    connectionContract.query(query, (err, rows, fields) => {
-      if (err) console.log(err);
-      else res.json(rows);
-    });
-  };
 
 const contractSpendingAcrossYears = (req, res) => {
     const year1 = req.params.year1;
@@ -41,6 +19,21 @@ const contractSpendingAcrossYears = (req, res) => {
     `;
   
     connectionContract.query(query, (err, rows, fields) => {
+      if (err) console.log(err);
+      else res.json(rows);
+    });
+  };
+
+const assistanceSpendingAcrossYears = (req, res) => {
+    const year1 = req.params.year1;
+    const year2 = req.params.year2;
+    const query = `
+      SELECT total_obligated_amount
+      FROM transaction
+      WHERE action_date_fiscal_year >= ${year1} AND action_date_fiscal_year <= ${year2}
+    `;
+  
+    connectionAssistance.query(query, (err, rows, fields) => {
       if (err) console.log(err);
       else res.json(rows);
     });
@@ -61,6 +54,21 @@ const contractSpendingAcrossYearsSum = (req, res) => {
     });
   };
 
+const assistanceSpendingAcrossYearsSum = (req, res) => {
+    const year1 = req.params.year1;
+    const year2 = req.params.year2;
+    const query = `
+      SELECT sum(total_obligated_amount)
+      FROM transaction
+      WHERE action_date_fiscal_year >= ${year1} AND action_date_fiscal_year <= ${year2}
+    `;
+  
+    connectionAssistance.query(query, (err, rows, fields) => {
+      if (err) console.log(err);
+      else res.json(rows);
+    });
+  };
+
 const contractAgencySpending = (req, res) => {
     const agency = req.params.agency;
     const query = `
@@ -76,6 +84,20 @@ const contractAgencySpending = (req, res) => {
     });
   };
 
+const assistanceAgencySpending = (req, res) => {
+    const agency = req.params.agency;
+    const query = `
+      SELECT sum(t.total_obligated_amount)
+      FROM agency a join transaction t on a.agency_code = t.awarding_agency_code
+      WHERE a.agency_name LIKE '${agency}%'
+    `;
+  
+    connectionAssistance.query(query, (err, rows, fields) => {
+      if (err) console.log(err);
+      else res.json(rows);
+    });
+  };
+
 const contractAgencySpendingYear = (req, res) => {
     const agency = req.params.agency;
     const year1 = req.params.year1;
@@ -86,6 +108,23 @@ const contractAgencySpendingYear = (req, res) => {
       WHERE s.awarding_agency_name LIKE '${agency}%' AND a.action_date_fiscal_year >= ${year1} 
       AND a.action_date_fiscal_year <= ${year2}
       GROUP BY s.awarding_agency_name
+    `;
+  
+    connectionContract.query(query, (err, rows, fields) => {
+      if (err) console.log(err);
+      else res.json(rows);
+    });
+  };
+
+const assistanceAgencySpendingYear = (req, res) => {
+    const agency = req.params.agency;
+    const year1 = req.params.year1;
+    const year2 = req.params.year2;
+    const query = `
+      SELECT sum(t.total_obligated_amount)
+      FROM agency a join transaction t on a.agency_code = t.awarding_agency_code
+      WHERE a.agency_name LIKE '${agency}%' AND t.action_date_fiscal_year >= ${year1} 
+      AND t.action_date_fiscal_year <= ${year2}
     `;
   
     connectionContract.query(query, (err, rows, fields) => {
@@ -161,9 +200,56 @@ const contractCovidAward = (req, res) => {
     });
   }; 
 
+const contractSpendingByYear = (req, res) => {
+    const year1 = req.params.year1;
+    const query = `
+      SELECT sum(potential_total_value_of_award)
+      FROM Awards
+      WHERE action_date_fiscal_year = ${year1} 
+    `;
+  
+    connectionContract.query(query, (err, rows, fields) => {
+      if (err) console.log(err);
+      else res.json(rows);
+    });
+  };
+
+const contractSourceToRecipient = (req, res) => {
+    const source = req.params.source;
+    const recipient = req.params.recipient;
+    const query = `
+      WITH sourceAwards AS (SELECT a.potential_total_value_of_award, recipient_duns_award
+      FROM Awards a JOIN Source s on a.awarding_agency_code_award = s.awarding_agency_code
+      WHERE s.awarding_agency_name LIKE '${source}%')
+      
+      SELECT sa.potential_total_value_of_award, sa.recipient_duns_award
+      FROM sourceAwards sa JOIN Recipient r on sa.recipient_duns_award = r.recipient_duns
+      WHERE r.recipient_name LIKE '${recipient}%'
+      GROUP BY sa.recipient_duns_award
+    `;
+  
+    connectionContract.query(query, (err, rows, fields) => {
+      if (err) console.log(err);
+      else res.json(rows);
+    });
+  };
+
+const contractRecipientType = (req, res) => {
+    const recipientType = req.params.recipientType;
+    const query = `
+      SELECT sum(a.potential_total_value_of_award)
+      FROM Awards a JOIN Recipient r ON a.recipient_duns_award = r.recipient_duns
+      WHERE organizational_type LIKE '${recipientType}%'
+    `;
+  
+    connectionContract.query(query, (err, rows, fields) => {
+      if (err) console.log(err);
+      else res.json(rows);
+    });
+  };
+
+
 module.exports = {
-    test: test,
-    test1: test1,
     contractSpendingAcrossYears: contractSpendingAcrossYears,
     contractAgencySpending: contractAgencySpending,
     contractSpendingAcrossYearsSum: contractSpendingAcrossYearsSum, 
@@ -171,6 +257,13 @@ module.exports = {
     contractForeignSpending: contractForeignSpending,
     contractStateSpending: contractStateSpending,
     contractLargestStateAward: contractLargestStateAward,
-    contractCovidAward: contractCovidAward
+    contractCovidAward: contractCovidAward,
+    assistanceSpendingAcrossYears: assistanceSpendingAcrossYears,
+    assistanceSpendingAcrossYearsSum: assistanceSpendingAcrossYearsSum,
+    assistanceAgencySpending: assistanceAgencySpending,
+    assistanceAgencySpendingYear: assistanceAgencySpendingYear,
+    contractSpendingByYear: contractSpendingByYear,
+    contractSourceToRecipient: contractSourceToRecipient,
+    contractRecipientType: contractRecipientType,
     
 };

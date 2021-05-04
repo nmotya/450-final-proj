@@ -9,10 +9,6 @@ app.use(cors({credentials: true, origin: `http://localhost:${port}`}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
-app.get('/test', routes.test);
-
-app.get('/test1', routes.test1);
-
 app.get('/contractSpendingAcrossYears/:year1/:year2', routes.contractSpendingAcrossYears);
 
 app.get('/contractSpendingAcrossYearsSum/:year1/:year2', routes.contractSpendingAcrossYearsSum);
@@ -28,6 +24,20 @@ app.get('/contractStateSpending/', routes.contractStateSpending);
 app.get('/contractLargestStateAward/:agency', routes.contractLargestStateAward);
 
 app.get('/contractCovidAward/', routes.contractCovidAward);
+
+app.get('/assistanceSpendingAcrossYears/:year1/:year2', routes.assistanceSpendingAcrossYears);
+
+app.get('/assistanceSpendingAcrossYearsSum/:year1/:year2', routes.assistanceSpendingAcrossYearsSum);
+
+app.get('/assistanceAgencySpending/:agency', routes.assistanceAgencySpending);
+
+app.get('/assistanceAgencySpendingYear/:agency/:year1/:year2', routes.assistanceAgencySpendingYear);
+
+app.get('/contractSpendingByYear/:year1', routes.contractSpendingByYear);
+
+app.get('/contractSourceToRecipient/:source/:recipient', routes.contractSourceToRecipient);
+
+app.get('/contractRecipientType/:recipient', routes.contractRecipientType);
 
 app.listen(port, () => {
   console.log(`App running on port ${port}`)
