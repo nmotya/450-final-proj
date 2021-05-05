@@ -312,7 +312,7 @@ const assistanceAreaofworkStateHighest = (req, res) => {
     GROUP BY aow.cfda_number, aow.cfda_title, s.recipient_state_name
     ORDER BY sum(t.total_obligated_amount) DESC
     )
-    SELECT MAX(sum) as sum, recipient_state_name, cfda_title 
+    SELECT MAX(sum) as sum, recipient_state_name as state, cfda_title 
     FROM SumQuery
     GROUP BY recipient_state_name;
   `;
@@ -333,7 +333,7 @@ const contractOrganizationStateHighest = (req, res) => {
     WHERE a.action_date_fiscal_year = ${year}
     GROUP BY r.recipient_name, r.recipient_state_code
     )
-    SELECT MAX(sum) as sum, recipient_state_code, recipient_name 
+    SELECT MAX(sum) as sum, recipient_state_code as state, recipient_name as recipient
     FROM SumQuery
     GROUP BY recipient_state_code;
   `;
@@ -348,7 +348,7 @@ const assistanceAreaofworkStateExists = (req, res) => {
   const year = req.params.year;
   const aow = req.params.aow;
   const query = `
-    SELECT DISTINCT s.recipient_state_name
+    SELECT DISTINCT s.recipient_state_name as state
     FROM state s
     WHERE
     EXISTS (
@@ -368,6 +368,43 @@ const assistanceAreaofworkStateExists = (req, res) => {
   });
 };
 
+
+const assistanceTotalAmountSpentState = (req, res) => {
+  const year1 = req.params.year1;
+  const year2 = req.params.year2;
+  const query = `
+    SELECT sum(t.total_obligated_amount) as sum, s.recipient_state_name as state
+    FROM area_of_work aow
+    JOIN transaction t ON aow.cfda_number = t.cfda_number
+    JOIN award a on a.award_id_fain = t.award_id_fain
+    JOIN recipient r on r.recipient_duns = a.recipient_duns
+    JOIN state s ON r.recipient_state_code = s.recipient_state_code
+    WHERE t.action_date_fiscal_year >= ${year1} AND  t.action_date_fiscal_year <= ${year2}
+    GROUP BY s.recipient_state_name
+  `;
+
+  connectionAssistance.query(query, (err, rows, fields) => {
+    if (err) console.log(err);
+    else res.json(rows);
+  });
+};
+
+const contractsTotalAmountSpentState = (req, res) => {
+  const year1 = req.params.year1;
+  const year2 = req.params.year2;
+  const query = `
+    SELECT sum(a.potential_total_value_of_award) as sum, r.recipient_state_code as state
+    FROM Recipient r
+    JOIN Awards a ON a.recipient_duns_award = r.recipient_duns
+    WHERE a.action_date_fiscal_year >= ${year1} AND a.action_date_fiscal_year <= ${year2}
+    GROUP BY recipient_state_code
+  `;
+
+  connectionContract.query(query, (err, rows, fields) => {
+    if (err) console.log(err);
+    else res.json(rows);
+  });
+};
 
 
 module.exports = {
@@ -394,4 +431,6 @@ module.exports = {
     assistanceSpendingByYear: assistanceSpendingByYear,
     assistanceSourceToRecipient: assistanceSourceToRecipient,
 
+    assistanceTotalAmountSpentState,
+    contractsTotalAmountSpentState
 };

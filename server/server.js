@@ -51,6 +51,11 @@ app.get('/assistanceSpendingByYear/:year', routes.assistanceSpendingByYear);
 
 app.get('/assistancetStateSpending/', routes.assistancetStateSpending);
 
+app.get('/assistanceTotalAmountSpentState/:year1/:year2', routes.assistanceTotalAmountSpentState);
+
+app.get('/contractsTotalAmountSpentState/:year1/:year2', routes.contractsTotalAmountSpentState);
+
+
 app.listen(port, () => {
   console.log(`App running on port ${port}`)
 });
