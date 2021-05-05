@@ -32,7 +32,7 @@ function App() {
             return (
               <>
                 <Map setTooltipContent={setContent}/>
-                <ReactTooltip>{content}</ReactTooltip>
+                <ReactTooltip html={true}>{content}</ReactTooltip>
               </>
             )
           }}
