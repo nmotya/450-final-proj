@@ -12,7 +12,7 @@ const contractSpendingAcrossYears = (req, res) => {
   const year1 = req.params.year1;
   const year2 = req.params.year2;
   const query = `
-    SELECT potential_total_value_of_award
+    SELECT potential_total_value_of_award, action_date_
     FROM Awards
     WHERE action_date_fiscal_year >= ${year1} AND action_date_fiscal_year <= ${year2}
     LIMIT 100000
@@ -69,12 +69,37 @@ const assistanceSpendingAcrossYearsSum = (req, res) => {
   });
 };
 
+const contractSpendingAcrossYearsSumGroupBy = (req, res) => {
+  const query = `
+    SELECT sum(potential_total_value_of_award), action_date_fiscal_year
+    FROM Awards
+    GROUP BY action_date_fiscal_year
+  `;
+
+  connectionContract.query(query, (err, rows, fields) => {
+    if (err) console.log(err);
+    else res.json(rows);
+  });
+};
+
+const assistanceSpendingAcrossYearsSumGroupBy = (req, res) => {
+  const query = `
+    SELECT sum(total_obligated_amount), action_date_fiscal_year
+    from transaction
+    GROUP BY action_date_fiscal_year
+  `;
+
+  connectionAssistance.query(query, (err, rows, fields) => {
+    if (err) console.log(err);
+    else res.json(rows);
+  });
+};
+
 const contractAgencySpending = (req, res) => {
   const agency = req.params.agency;
   const query = `
     SELECT sum(potential_total_value_of_award), s.awarding_agency_name
     FROM Awards a JOIN Source s ON a.awarding_agency_code_award = s.awarding_agency_code
-    WHERE s.awarding_agency_name LIKE '${agency}%' 
     GROUP BY s.awarding_agency_name
   `;
 
@@ -87,9 +112,9 @@ const contractAgencySpending = (req, res) => {
 const assistanceAgencySpending = (req, res) => {
   const agency = req.params.agency;
   const query = `
-    SELECT sum(t.total_obligated_amount)
+    SELECT sum(t.total_obligated_amount), a.agency_name
     FROM agency a join transaction t on a.agency_code = t.awarding_agency_code
-    WHERE a.agency_name LIKE '${agency}%'
+    GROUP BY a.agency_name
   `;
 
   connectionAssistance.query(query, (err, rows, fields) => {
@@ -163,7 +188,7 @@ const contractStateSpending = (req, res) => {
   });
 }; 
 
-const assistancetStateSpending = (req, res) => {
+const assistanceStateSpending = (req, res) => {
   const query = `
     WITH spendingState AS (SELECT sum(t.total_obligated_amount) as sum, r.recipient_state_code as code
     from transaction t JOIN award a on t.award_id_fain = a.award_id_fain JOIN recipient r on a.recipient_duns = r.recipient_duns
@@ -285,11 +310,24 @@ const assistanceSourceToRecipient = (req, res) => {
 };
 
 const contractRecipientType = (req, res) => {
-  const recipientType = req.params.recipientType;
   const query = `
-    SELECT sum(a.potential_total_value_of_award)
+    SELECT sum(a.potential_total_value_of_award), r.organizational_type
     FROM Awards a JOIN Recipient r ON a.recipient_duns_award = r.recipient_duns
-    WHERE organizational_type LIKE '${recipientType}%'
+    GROUP BY r.organizational_type
+  `;
+
+  connectionContract.query(query, (err, rows, fields) => {
+    if (err) console.log(err);
+    else res.json(rows);
+  });
+};
+
+const contractPaSpendingByYear = (req, res) => {
+  const query = `
+    SELECT sum(a.potential_total_value_of_award), a.action_date_fiscal_year, r.recipient_state_code
+    FROM Awards a JOIN Recipient r on a.recipient_duns_award = r.recipient_duns
+    WHERE r.recipient_state_code LIKE 'PA%' 
+    GROUP BY a.action_date_fiscal_year
   `;
 
   connectionContract.query(query, (err, rows, fields) => {
@@ -426,11 +464,13 @@ module.exports = {
     assistanceAreaofworkStateExists,
     contractOrganizationStateHighest,
     assistanceAreaofworkStateHighest,
-    // Add routes
-    assistancetStateSpending: assistancetStateSpending,
+    assistanceStateSpending: assistanceStateSpending,
     assistanceSpendingByYear: assistanceSpendingByYear,
     assistanceSourceToRecipient: assistanceSourceToRecipient,
-
     assistanceTotalAmountSpentState,
-    contractsTotalAmountSpentState
+    contractsTotalAmountSpentState,
+    contractPaSpendingByYear: contractPaSpendingByYear,
+    //add routes
+    assistanceSpendingAcrossYearsSumGroupBy: assistanceSpendingAcrossYearsSumGroupBy,
+    contractSpendingAcrossYearsSumGroupBy, contractSpendingAcrossYearsSumGroupBy
 };
