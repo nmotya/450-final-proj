@@ -13,7 +13,7 @@ app.get('/contractSpendingAcrossYears/:year1/:year2', routes.contractSpendingAcr
 
 app.get('/contractSpendingAcrossYearsSum/:year1/:year2', routes.contractSpendingAcrossYearsSum);
 
-app.get('/contractAgencySpending/:agency', routes.contractAgencySpending);
+app.get('/contractAgencySpending/', routes.contractAgencySpending);
 
 app.get('/contractAgencySpendingYear/:agency/:year1/:year2', routes.contractAgencySpendingYear);
 
@@ -29,7 +29,7 @@ app.get('/assistanceSpendingAcrossYears/:year1/:year2', routes.assistanceSpendin
 
 app.get('/assistanceSpendingAcrossYearsSum/:year1/:year2', routes.assistanceSpendingAcrossYearsSum);
 
-app.get('/assistanceAgencySpending/:agency', routes.assistanceAgencySpending);
+app.get('/assistanceAgencySpending/', routes.assistanceAgencySpending);
 
 app.get('/assistanceAgencySpendingYear/:agency/:year1/:year2', routes.assistanceAgencySpendingYear);
 
@@ -37,7 +37,7 @@ app.get('/contractSpendingByYear/:year1', routes.contractSpendingByYear);
 
 app.get('/contractSourceToRecipient/:source/:recipient', routes.contractSourceToRecipient);
 
-app.get('/contractRecipientType/:recipient', routes.contractRecipientType);
+app.get('/contractRecipientType/', routes.contractRecipientType);
 
 app.get('/assistanceAreaofworkStateExists/:aow/:year', routes.assistanceAreaofworkStateExists);
 
@@ -45,11 +45,21 @@ app.get('/contractOrganizationStateHighest/:year', routes.contractOrganizationSt
 
 app.get('/assistanceAreaofworkStateHighest/:year', routes.assistanceAreaofworkStateHighest);
 
+app.get('/assistanceSourceToRecipient/:source/:recipient', routes.assistanceSourceToRecipient);
+
+app.get('/assistanceSpendingByYear/:year', routes.assistanceSpendingByYear);
+
+app.get('/assistanceStateSpending/', routes.assistanceStateSpending);
+
 app.get('/assistanceTotalAmountSpentState/:year1/:year2', routes.assistanceTotalAmountSpentState);
 
 app.get('/contractsTotalAmountSpentState/:year1/:year2', routes.contractsTotalAmountSpentState);
 
+app.get('/contractPaSpendingByYear/', routes.contractPaSpendingByYear);
 
+app.get('/assistanceSpendingAcrossYearsSumGroupBy/', routes.assistanceSpendingAcrossYearsSumGroupBy);
+
+app.get('/contractSpendingAcrossYearsSumGroupBy/', routes.contractSpendingAcrossYearsSumGroupBy);
 app.listen(port, () => {
   console.log(`App running on port ${port}`)
 });
