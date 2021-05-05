@@ -45,6 +45,12 @@ app.get('/contractOrganizationStateHighest/:year', routes.contractOrganizationSt
 
 app.get('/assistanceAreaofworkStateHighest/:year', routes.assistanceAreaofworkStateHighest);
 
+app.get('/assistanceSourceToRecipient/:source/:recipient', routes.assistanceSourceToRecipient);
+
+app.get('/assistanceSpendingByYear/:year', routes.assistanceSpendingByYear);
+
+app.get('/assistancetStateSpending/', routes.assistancetStateSpending);
+
 app.listen(port, () => {
   console.log(`App running on port ${port}`)
 });

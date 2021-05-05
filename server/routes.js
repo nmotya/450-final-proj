@@ -147,7 +147,7 @@ const contractForeignSpending = (req, res) => {
     else res.json(rows);
   });
 };
-
+//No Non USA country code exists in Assistance database
 
 const contractStateSpending = (req, res) => {
   const query = `
@@ -155,7 +155,6 @@ const contractStateSpending = (req, res) => {
     FROM Awards a JOIN Recipient r ON a.recipient_duns_award = r.recipient_duns
     WHERE r.recipient_country_name= 'UNITED STATES'
     GROUP BY r.recipient_state_code
-    ORDER by sum desc1
     `;
 
   connectionContract.query(query, (err, rows, fields) => {
@@ -164,16 +163,33 @@ const contractStateSpending = (req, res) => {
   });
 }; 
 
+const assistancetStateSpending = (req, res) => {
+  const query = `
+    WITH spendingState AS (SELECT sum(t.total_obligated_amount) as sum, r.recipient_state_code as code
+    from transaction t JOIN award a on t.award_id_fain = a.award_id_fain JOIN recipient r on a.recipient_duns = r.recipient_duns
+    WHERE recipient_country_code = 'USA'
+    group by r.recipient_state_code)
+    SELECT s.sum, s.code, st.recipient_state_name
+    FROM spendingState s JOIN state st ON s.code = st.recipient_state_code
+    `;
+
+  connectionAssistance.query(query, (err, rows, fields) => {
+    if (err) console.log(err);
+    else res.json(rows);
+  });
+}; 
+
+//Finds largest award from given agency, matches it to state
 const contractLargestStateAward = (req, res) => {
   const agency = req.params.agency;
   const query = `
-    WITH epaAwards AS (
+    WITH agencyAwards AS (
     SELECT max(a.potential_total_value_of_award) as max, a.recipient_duns_award
     FROM Awards a JOIN Source s ON a.awarding_agency_code_award = s.awarding_agency_code
     WHERE s.awarding_agency_name like '${agency}%'
     )
     SELECT distinct r.recipient_state_code
-    FROM epaAwards e JOIN Recipient r ON e.recipient_duns_award = r.recipient_duns
+    FROM agencyAwards e JOIN Recipient r ON e.recipient_duns_award = r.recipient_duns
     `;
 
   connectionContract.query(query, (err, rows, fields) => {
@@ -214,6 +230,20 @@ const contractSpendingByYear = (req, res) => {
   });
 };
 
+const assistanceSpendingByYear = (req, res) => {
+  const year1 = req.params.year1;
+  const query = `
+    SELECT sum(total_obligated_amount)
+    FROM transaction
+    WHERE action_date_fiscal_year = ${year1} 
+  `;
+
+  connectionAssistance.query(query, (err, rows, fields) => {
+    if (err) console.log(err);
+    else res.json(rows);
+  });
+};
+
 const contractSourceToRecipient = (req, res) => {
   const source = req.params.source;
   const recipient = req.params.recipient;
@@ -229,6 +259,26 @@ const contractSourceToRecipient = (req, res) => {
   `;
 
   connectionContract.query(query, (err, rows, fields) => {
+    if (err) console.log(err);
+    else res.json(rows);
+  });
+};
+
+const assistanceSourceToRecipient = (req, res) => {
+  const source = req.params.source;
+  const recipient = req.params.recipient;
+  const query = `
+    WITH sourceAwards as (SELECT t.total_obligated_amount as amount, a.recipient_duns
+    FROM transaction t JOIN agency ag ON t.awarding_agency_code = ag.agency_code JOIN award a ON t.award_id_fain = a.award_id_fain
+    WHERE ag.agency_name LIKE '${source}%')
+    
+    Select sa.amount, sa.recipient_duns
+    FROM sourceAwards sa JOIN recipient r ON sa.recipient_duns = r.recipient_duns
+    WHERE r.recipient_name LIKE '${recipient}%'
+    GROUP BY sa.recipient_duns
+  `;
+
+  connectionAssistance.query(query, (err, rows, fields) => {
     if (err) console.log(err);
     else res.json(rows);
   });
@@ -322,21 +372,26 @@ const assistanceAreaofworkStateExists = (req, res) => {
 
 module.exports = {
     contractSpendingAcrossYears: contractSpendingAcrossYears,
+    assistanceSpendingAcrossYears: assistanceSpendingAcrossYears,
     contractAgencySpending: contractAgencySpending,
+    assistanceAgencySpending: assistanceAgencySpending,
     contractSpendingAcrossYearsSum: contractSpendingAcrossYearsSum, 
+    assistanceSpendingAcrossYearsSum: assistanceSpendingAcrossYearsSum,
     contractAgencySpendingYear: contractAgencySpendingYear,
+    assistanceAgencySpendingYear: assistanceAgencySpendingYear,
     contractForeignSpending: contractForeignSpending,
     contractStateSpending: contractStateSpending,
     contractLargestStateAward: contractLargestStateAward,
     contractCovidAward: contractCovidAward,
-    assistanceSpendingAcrossYears: assistanceSpendingAcrossYears,
-    assistanceSpendingAcrossYearsSum: assistanceSpendingAcrossYearsSum,
-    assistanceAgencySpending: assistanceAgencySpending,
-    assistanceAgencySpendingYear: assistanceAgencySpendingYear,
     contractSpendingByYear: contractSpendingByYear,
     contractSourceToRecipient: contractSourceToRecipient,
     contractRecipientType: contractRecipientType,
     assistanceAreaofworkStateExists,
     contractOrganizationStateHighest,
-    assistanceAreaofworkStateHighest
+    assistanceAreaofworkStateHighest,
+    // Add routes
+    assistancetStateSpending: assistancetStateSpending,
+    assistanceSpendingByYear: assistanceSpendingByYear,
+    assistanceSourceToRecipient: assistanceSourceToRecipient,
+
 };
