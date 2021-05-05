@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 var routes = require("./routes.js");
 const cors = require('cors');
 
-app.use(cors({credentials: true, origin: `http://localhost:${port}`}));
+app.use(cors({credentials: true, origin: `http://localhost:3000`}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
@@ -41,6 +41,9 @@ app.get('/contractRecipientType/:recipient', routes.contractRecipientType);
 
 app.get('/assistanceAreaofworkStateExists/:aow/:year', routes.assistanceAreaofworkStateExists);
 
+app.get('/contractOrganizationStateHighest/:year', routes.contractOrganizationStateHighest);
+
+app.get('/assistanceAreaofworkStateHighest/:year', routes.assistanceAreaofworkStateHighest);
 
 app.listen(port, () => {
   console.log(`App running on port ${port}`)
