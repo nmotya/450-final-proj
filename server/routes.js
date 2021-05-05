@@ -267,23 +267,58 @@ const assistanceAreaofworkStateHighest = (req, res) => {
     GROUP BY recipient_state_name;
   `;
 
+  connectionAssistance.query(query, (err, rows, fields) => {
+    if (err) console.log(err);
+    else res.json(rows);
+  });
+};
+
+const contractOrganizationStateHighest = (req, res) => {
+  const year = req.params.year;
+  const query = `
+  WITH SumQuery as (
+    SELECT sum(a.potential_total_value_of_award) as sum, r.recipient_state_code, r.recipient_name
+    FROM Recipient r
+    JOIN Awards a ON a.recipient_duns_award = r.recipient_duns
+    WHERE a.action_date_fiscal_year = ${year}
+    GROUP BY r.recipient_name, r.recipient_state_code
+    )
+    SELECT MAX(sum), recipient_state_code, recipient_name 
+    FROM SumQuery
+    GROUP BY recipient_state_code;
+  `;
+
   connectionContract.query(query, (err, rows, fields) => {
     if (err) console.log(err);
     else res.json(rows);
   });
 };
 
-/*
-SELECT sum(t.total_obligated_amount), aow.cfda_number, aow.cfda_title
-FROM area_of_work aow
-JOIN transaction t ON aow.cfda_number = t.cfda_number
-JOIN award a on a.award_id_fain = t.award_id_fain
-JOIN recipient r on r.recipient_duns = a.recipient_duns
-JOIN state s ON r.recipient_state_code = s.recipient_state_code
-WHERE s.recipient_state_name = 'Pennsylvania' and t.action_date_fiscal_year = 2019
-GROUP BY aow.cfda_number, aow.cfda_title
-ORDER BY sum(t.total_obligated_amount) DESC;
-*/
+const assistanceAreaofworkStateExists = (req, res) => {
+  const year = req.params.year;
+  const aow = req.params.aow;
+  const query = `
+    SELECT DISTINCT s.recipient_state_name
+    FROM state s
+    WHERE
+    EXISTS (
+    SELECT *
+    FROM area_of_work aow1
+    JOIN transaction t1 ON aow1.cfda_number = t1.cfda_number
+    JOIN award a1 on a1.award_id_fain = t1.award_id_fain
+    JOIN recipient r1 on r1.recipient_duns = a1.recipient_duns
+    WHERE r1.recipient_state_code = s.recipient_state_code AND aow1.cfda_title = ${aow}
+    AND t1.action_date_fiscal_year = ${year}
+    )
+  `;
+
+  connectionAssistance.query(query, (err, rows, fields) => {
+    if (err) console.log(err);
+    else res.json(rows);
+  });
+};
+
+
 
 module.exports = {
     contractSpendingAcrossYears: contractSpendingAcrossYears,
@@ -301,5 +336,7 @@ module.exports = {
     contractSpendingByYear: contractSpendingByYear,
     contractSourceToRecipient: contractSourceToRecipient,
     contractRecipientType: contractRecipientType,
-    
+    assistanceAreaofworkStateExists,
+    contractOrganizationStateHighest,
+    assistanceAreaofworkStateHighest
 };

@@ -39,6 +39,9 @@ app.get('/contractSourceToRecipient/:source/:recipient', routes.contractSourceTo
 
 app.get('/contractRecipientType/:recipient', routes.contractRecipientType);
 
+app.get('/assistanceAreaofworkStateExists/:aow/:year', routes.assistanceAreaofworkStateExists);
+
+
 app.listen(port, () => {
   console.log(`App running on port ${port}`)
 });
