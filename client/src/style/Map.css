@@ -1,14 +1,16 @@
 #mapWrapper {
-    position: absolute;
     top: 3.5rem;
     bottom: 0;
     width: 100%;
+    display: grid;
+    grid-template-columns: 0.3fr 1fr;
+    justify-content: left;
 }
 
 #mapDiv {
     display: block;
-    margin-left: 30%;
     height: 100%;
+    padding-left: 0;
 }
 
 @keyframes loading { 
@@ -35,7 +37,6 @@
 }
 
 #mapQueryWrapper {
-    width: 30%;
     border: gray 2px solid;
     padding-top: 1.5rem;
     padding-bottom: 2rem;
@@ -67,4 +68,4 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-  }
+}
