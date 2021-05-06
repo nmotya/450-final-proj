@@ -16,56 +16,227 @@ import {
   Geography
 } from "react-simple-maps";
 import '../style/Map.css';
-import Dropdown from 'react-bootstrap/Dropdown';
+import { DropdownButton, Tab, Tabs, Dropdown, Row, Col, Button } from 'react-bootstrap';
 
 const geoUrl = "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
 
 const Map = ({ setTooltipContent }) => {
+  const [isLoading, setIsLoading] = useState(false);  
   const [stateArray, setStateArray] = useState();  
   const [dataset, setDataset] = useState('Contracts');
+  const [query1year1, setQuery1year1] = useState(2018);
+  const [query1year2, setQuery1year2] = useState(2021);
+  const [query2year, setQuery2year] = useState(2018);
+  const [query4year1, setQuery4year1] = useState(2018);
+  const [query4year2, setQuery4year2] = useState(2021);
+  const [query5year, setQuery5year] = useState(2018);
+  const [query6year, setQuery6year] = useState(2018);
+  const [query6aow, setQuery6aow] = useState("AGRICULTURAL RESEARCH BASIC AND APPLIED RESEARCH");
 
-  useEffect(() => {
-    getContractsTotalAmountSpentState(2019, 2020).then((response) => {
+
+
+  function handleSelect(e, func){
+    func(e);
+  }
+
+  function contractQuery(func) {
+    setStateArray(null);
+    setIsLoading(true);
+    func.then((response) => {
       var output = response;
       for (var i = 0; i < response.length; i++) {
        output[i].state = state_dict[response[i].state.replace(/(\r)/gm, "")] || "";
       }
-      console.log(output);
+      setIsLoading(false);
       setStateArray(output);
     });
-  }, []);
+  }
+
+
+  function assistanceQuery(func) {
+    setStateArray(null);
+    setIsLoading(true);
+    func.then((response) => {
+      console.log(response);
+      var output = response;
+      //for (var i = 0; i < response.length; i++) {
+      // output[i].state = state_dict[response[i].state.replace(/(\r)/gm, "")] || "";
+      //}
+      setIsLoading(false);
+      setStateArray(output);
+    });
+  }
 
   return (
     <>
       <Navbar />
       <div id="mapWrapper">
-        <Dropdown>
-          <Dropdown.Toggle variant="success" id="dropdown-basic">
-            Choose a dataset
-          </Dropdown.Toggle>
-          <Dropdown.Menu>
-            { 
-              dataset === 'Contracts' ?
-              <>
-                <Dropdown.Item as="Button" active onClick={() => { setDataset('Contracts') }}>Contracts</Dropdown.Item>
-                <Dropdown.Item as="Button" onClick={() => { setDataset('Assistance') }}>Financial Assistance</Dropdown.Item>
-              </>
-              :
-              <>
-                <Dropdown.Item as="Button" onClick={() => { setDataset('Contracts') }}>Contracts</Dropdown.Item>
-                <Dropdown.Item as="Button" onClick={() => { setDataset('Assistance') }} active>Financial Assistance</Dropdown.Item>
-              </>
-            }
-          </Dropdown.Menu>
-        </Dropdown>
-        { 
-          dataset === 'Contracts' ?
-          <>
-          </>
-          :
-          <>
-          </>
-        }
+        <Tabs defaultActiveKey="contracts" 
+          style={{width: "30%", marginTop: "1rem", marginLeft: "1rem"}} id="controlled-tab-example" 
+          onClick={(k) => setDataset(k.target.innerHTML)}
+        >
+          <Tab eventKey="contracts"  title="Contracts" /> 
+          <Tab eventKey="Financial Assistance" title="Financial Assistance"/>
+        </Tabs>
+        <div id="mapQueryWrapper" className="d-flex justify-content-center">
+          { 
+            dataset === 'Contracts' ?
+            <>
+              <h3>Query Option 1:</h3>
+              <div className="line-break" />
+              <p className="queryDescription">The amount of total contract spending received per state over a given year range</p>
+              <div className="line-break" />
+              <Row>
+                <Col>
+                  <DropdownButton onSelect={(e) => handleSelect(e, setQuery1year1)} title={query1year1}>
+                    <Dropdown.Item eventKey= "2018">2018</Dropdown.Item>
+                    <Dropdown.Item eventKey= "2019">2019</Dropdown.Item>
+                    <Dropdown.Item eventKey= "2020">2020</Dropdown.Item>
+                    <Dropdown.Item eventKey= "2021">2021</Dropdown.Item>
+                  </DropdownButton> 
+                </Col>
+                <Col>
+                  <DropdownButton onSelect={(e) => handleSelect(e, setQuery1year2)} title={query1year2}>
+                    <Dropdown.Item eventKey= "2018">2018</Dropdown.Item>
+                    <Dropdown.Item eventKey= "2019">2019</Dropdown.Item>
+                    <Dropdown.Item eventKey= "2020">2020</Dropdown.Item>
+                    <Dropdown.Item eventKey= "2021">2021</Dropdown.Item>
+                  </DropdownButton> 
+                </Col>
+              </Row>
+              <div className="line-break" />
+              <Button 
+                variant="primary" 
+                style={{marginTop: "1rem"}} 
+                onClick={() => {
+                  const first = Math.min(query1year1, query1year2);
+                  const second = Math.max(query1year1, query1year2);
+                  contractQuery(getContractsTotalAmountSpentState(first, second));
+                }}
+              >
+                Submit
+              </Button>
+              <div className="line-break" />
+              <div className="borderDiv" />
+
+              <h3>Query Option 2:</h3>
+              <div className="line-break" />
+              <p className="queryDescription">The organization that received the most contract spending in each state for a given year</p>
+              <div className="line-break" />
+              <DropdownButton onSelect={(e) => handleSelect(e, setQuery2year)} title={query2year}>
+                <Dropdown.Item eventKey= "2018">2018</Dropdown.Item>
+                <Dropdown.Item eventKey= "2019">2019</Dropdown.Item>
+                <Dropdown.Item eventKey= "2020">2020</Dropdown.Item>
+                <Dropdown.Item eventKey= "2021">2021</Dropdown.Item>
+              </DropdownButton> 
+              <div className="line-break" />
+              <Button 
+                variant="primary" 
+                style={{marginTop: "1rem"}} 
+                onClick={() => {
+                  contractQuery(getContractOrganizationStateHighest(query2year));
+                }}
+              >
+                Submit
+              </Button>
+            </>
+            : 
+            <>
+              <h3>Query Option 1:</h3>
+              <div className="line-break" />
+              <p className="queryDescription">The amount of total financial assistance spending received per state over a given year range</p>
+              <div className="line-break" />
+              <Row>
+                <Col>
+                  <DropdownButton onSelect={(e) => handleSelect(e, setQuery4year1)} title={query4year1}>
+                    <Dropdown.Item eventKey= "2018">2018</Dropdown.Item>
+                    <Dropdown.Item eventKey= "2019">2019</Dropdown.Item>
+                    <Dropdown.Item eventKey= "2020">2020</Dropdown.Item>
+                    <Dropdown.Item eventKey= "2021">2021</Dropdown.Item>
+                  </DropdownButton> 
+                </Col>
+                <Col>
+                  <DropdownButton onSelect={(e) => handleSelect(e, setQuery4year2)} title={query4year2}>
+                    <Dropdown.Item eventKey= "2018">2018</Dropdown.Item>
+                    <Dropdown.Item eventKey= "2019">2019</Dropdown.Item>
+                    <Dropdown.Item eventKey= "2020">2020</Dropdown.Item>
+                    <Dropdown.Item eventKey= "2021">2021</Dropdown.Item>
+                  </DropdownButton> 
+                </Col>
+              </Row>
+              <div className="line-break" />
+              <Button 
+                variant="primary" 
+                style={{marginTop: "1rem"}} 
+                onClick={() => {
+                  const first = Math.min(query4year1, query4year2);
+                  const second = Math.max(query4year1, query4year2);
+                  assistanceQuery(getAssistanceTotalAmountSpentState(first, second));
+                }}
+              >
+                Submit
+              </Button>
+              <div className="line-break" />
+              <div className="borderDiv" />
+            
+              <h3>Query Option 2:</h3>
+              <div className="line-break" />
+              <p className="queryDescription">The area of work that received the most financial assistance spending in each state for a given year</p>
+              <div className="line-break" />
+              <DropdownButton onSelect={(e) => handleSelect(e, setQuery5year)} title={query5year}>
+                <Dropdown.Item eventKey= "2018">2018</Dropdown.Item>
+                <Dropdown.Item eventKey= "2019">2019</Dropdown.Item>
+                <Dropdown.Item eventKey= "2020">2020</Dropdown.Item>
+                <Dropdown.Item eventKey= "2021">2021</Dropdown.Item>
+              </DropdownButton> 
+              <div className="line-break" />
+              <Button 
+                variant="primary" 
+                style={{marginTop: "1rem"}} 
+                onClick={() => {
+                  assistanceQuery(getAssistanceAreaofworkStateHighest(query5year));
+                }}
+              >
+                Submit
+              </Button>
+              <div className="line-break" />
+              <div className="borderDiv" />
+
+              <h3>Query Option 3:</h3>
+              <div className="line-break" />
+              <p className="queryDescription">The states that received finanical assistance spending money for a given area of work for a given year.</p>
+              <div className="line-break" />
+              <Row>
+                <Col>
+                  <DropdownButton onSelect={(e) => handleSelect(e, setQuery6year)} title={query6year}>
+                    <Dropdown.Item eventKey= "2018">2018</Dropdown.Item>
+                    <Dropdown.Item eventKey= "2019">2019</Dropdown.Item>
+                    <Dropdown.Item eventKey= "2020">2020</Dropdown.Item>
+                    <Dropdown.Item eventKey= "2021">2021</Dropdown.Item>
+                  </DropdownButton> 
+                </Col>
+                <Col>
+                  <DropdownButton onSelect={(e) => handleSelect(e, setQuery6aow)} title={query6aow} id="buttonText">
+                    <Dropdown.Item eventKey= "AGRICULTURAL RESEARCH BASIC AND APPLIED RESEARCH">AGRICULTURAL RESEARCH BASIC AND APPLIED RESEARCH</Dropdown.Item>
+                    <Dropdown.Item eventKey= "HIGH INTENSITY DRUG TRAFFICKING AREAS PROGRAM">HIGH INTENSITY DRUG TRAFFICKING AREAS PROGRAM</Dropdown.Item>
+                    <Dropdown.Item eventKey= "DISASTER GRANTS - PUBLIC ASSISTANCE (PRESIDENTIALLY DECLARED DISASTERS)">DISASTER GRANTS - PUBLIC ASSISTANCE (PRESIDENTIALLY DECLARED DISASTERS)</Dropdown.Item>
+                    <Dropdown.Item eventKey= "2021">2021</Dropdown.Item>
+                  </DropdownButton> 
+                </Col>
+              </Row>
+              <div className="line-break" />
+              <Button 
+                variant="primary" 
+                style={{marginTop: "1rem"}} 
+                onClick={() => {
+                  assistanceQuery(getAssistanceAreaofworkStateExists(query6aow, query6year));
+                }}
+              >
+                Submit
+              </Button>
+            </>
+          }
+        </div>
         <ComposableMap data-tip="" projectionConfig={{ scale: 1000 }} projection="geoAlbersUsa" id="mapDiv">
           {stateArray ?
             <Geographies geography={geoUrl}>
@@ -93,10 +264,10 @@ const Map = ({ setTooltipContent }) => {
                       onMouseEnter={() => {
                         if (stateArray) {
                           const name = geo.properties.name;
-                          if (cur.cfda_title) {
+                          if (cur.recipient) {
                             setTooltipContent(`
                               <div style="text-align: center">${name}</div>
-                              <div style="text-align: center">${cur.cfda_title}</div> 
+                              <div style="text-align: center">${cur.recipient}</div> 
                               <div style="text-align: center">$${cur.sum.toLocaleString()}</div>
                             `);
                           } else {
@@ -132,7 +303,7 @@ const Map = ({ setTooltipContent }) => {
           }
         </ComposableMap>
         {
-          !stateArray ?
+          isLoading ?
           <div id="loading" />
           :null
         }
