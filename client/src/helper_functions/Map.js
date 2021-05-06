@@ -62,5 +62,6 @@ module.exports = {
   getContractOrganizationStateHighest,
   getAssistanceAreaofworkStateExists,
   getAssistanceTotalAmountSpentState,
-  getContractStateAgencyMax
+  getContractStateAgencyMax,
+  getContractsTotalAmountSpentState
 };
