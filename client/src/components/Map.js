@@ -57,11 +57,7 @@ const Map = ({ setTooltipContent }) => {
     setStateArray(null);
     setIsLoading(true);
     func.then((response) => {
-      console.log(response);
       var output = response;
-      //for (var i = 0; i < response.length; i++) {
-      // output[i].state = state_dict[response[i].state.replace(/(\r)/gm, "")] || "";
-      //}
       setIsLoading(false);
       setStateArray(output);
     });
@@ -96,7 +92,7 @@ const Map = ({ setTooltipContent }) => {
                       <Dropdown.Item eventKey= "2021">2021</Dropdown.Item>
                     </DropdownButton> 
                   </Col>
-                  <Col>
+                  <Col lg={5} style={{marginRight: "-8%"}}>
                     <DropdownButton onSelect={(e) => handleSelect(e, setQuery1year2)} title={query1year2}>
                       <Dropdown.Item eventKey= "2018">2018</Dropdown.Item>
                       <Dropdown.Item eventKey= "2019">2019</Dropdown.Item>
@@ -156,7 +152,7 @@ const Map = ({ setTooltipContent }) => {
                       <Dropdown.Item eventKey= "2021">2021</Dropdown.Item>
                     </DropdownButton> 
                   </Col>
-                  <Col>
+                  <Col lg={5} style={{marginRight: "-8%"}}>
                     <DropdownButton onSelect={(e) => handleSelect(e, setQuery4year2)} title={query4year2}>
                       <Dropdown.Item eventKey= "2018">2018</Dropdown.Item>
                       <Dropdown.Item eventKey= "2019">2019</Dropdown.Item>
@@ -216,7 +212,7 @@ const Map = ({ setTooltipContent }) => {
                       <Dropdown.Item eventKey= "2021">2021</Dropdown.Item>
                     </DropdownButton> 
                   </Col>
-                  <Col>
+                  <Col lg={5}>
                     <DropdownButton onSelect={(e) => handleSelect(e, setQuery6aow)} title={query6aow} id="buttonText">
                       <Dropdown.Item eventKey= "AGRICULTURAL RESEARCH BASIC AND APPLIED RESEARCH">AGRICULTURAL RESEARCH BASIC AND APPLIED RESEARCH</Dropdown.Item>
                       <Dropdown.Item eventKey= "HIGH INTENSITY DRUG TRAFFICKING AREAS PROGRAM">HIGH INTENSITY DRUG TRAFFICKING AREAS PROGRAM</Dropdown.Item>
