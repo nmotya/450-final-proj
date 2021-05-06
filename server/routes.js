@@ -388,8 +388,7 @@ const assistanceAreaofworkStateExists = (req, res) => {
   const query = `
     SELECT DISTINCT s.recipient_state_name as state
     FROM state s
-    WHERE
-    EXISTS (
+    WHERE EXISTS (
     SELECT *
     FROM area_of_work aow1
     JOIN transaction t1 ON aow1.cfda_number = t1.cfda_number
