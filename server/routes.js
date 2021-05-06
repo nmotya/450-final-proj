@@ -350,7 +350,7 @@ const assistanceAreaofworkStateHighest = (req, res) => {
     GROUP BY aow.cfda_number, aow.cfda_title, s.recipient_state_name
     ORDER BY sum(t.total_obligated_amount) DESC
     )
-    SELECT MAX(sum) as sum, recipient_state_name as state, cfda_title 
+    SELECT MAX(sum) as sum, recipient_state_name as state, cfda_title as recipient
     FROM SumQuery
     GROUP BY recipient_state_name;
   `;
@@ -417,7 +417,7 @@ const assistanceTotalAmountSpentState = (req, res) => {
     JOIN award a on a.award_id_fain = t.award_id_fain
     JOIN recipient r on r.recipient_duns = a.recipient_duns
     JOIN state s ON r.recipient_state_code = s.recipient_state_code
-    WHERE t.action_date_fiscal_year >= ${year1} AND  t.action_date_fiscal_year <= ${year2}
+    WHERE t.action_date_fiscal_year >= ${year1} AND t.action_date_fiscal_year <= ${year2}
     GROUP BY s.recipient_state_name
   `;
 
