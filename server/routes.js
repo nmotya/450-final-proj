@@ -71,7 +71,7 @@ const assistanceSpendingAcrossYearsSum = (req, res) => {
 
 const contractSpendingAcrossYearsSumGroupBy = (req, res) => {
   const query = `
-    SELECT sum(potential_total_value_of_award), action_date_fiscal_year
+    SELECT sum(potential_total_value_of_award) AS sum, action_date_fiscal_year AS year
     FROM Awards
     GROUP BY action_date_fiscal_year
   `;
@@ -84,7 +84,7 @@ const contractSpendingAcrossYearsSumGroupBy = (req, res) => {
 
 const assistanceSpendingAcrossYearsSumGroupBy = (req, res) => {
   const query = `
-    SELECT sum(total_obligated_amount), action_date_fiscal_year
+    SELECT sum(total_obligated_amount) AS sum, action_date_fiscal_year AS year
     from transaction
     GROUP BY action_date_fiscal_year
   `;
@@ -98,7 +98,7 @@ const assistanceSpendingAcrossYearsSumGroupBy = (req, res) => {
 const contractAgencySpending = (req, res) => {
   const agency = req.params.agency;
   const query = `
-    SELECT sum(potential_total_value_of_award), s.awarding_agency_name
+    SELECT sum(potential_total_value_of_award) AS sum, s.awarding_agency_name AS name
     FROM Awards a JOIN Source s ON a.awarding_agency_code_award = s.awarding_agency_code
     GROUP BY s.awarding_agency_name
   `;
@@ -311,7 +311,7 @@ const assistanceSourceToRecipient = (req, res) => {
 
 const contractRecipientType = (req, res) => {
   const query = `
-    SELECT sum(a.potential_total_value_of_award), r.organizational_type
+    SELECT sum(a.potential_total_value_of_award) AS sum, r.organizational_type AS type
     FROM Awards a JOIN Recipient r ON a.recipient_duns_award = r.recipient_duns
     GROUP BY r.organizational_type
   `;
@@ -324,7 +324,7 @@ const contractRecipientType = (req, res) => {
 
 const contractPaSpendingByYear = (req, res) => {
   const query = `
-    SELECT sum(a.potential_total_value_of_award), a.action_date_fiscal_year, r.recipient_state_code
+    SELECT sum(a.potential_total_value_of_award) AS sum, a.action_date_fiscal_year AS year, r.recipient_state_code AS state_code
     FROM Awards a JOIN Recipient r on a.recipient_duns_award = r.recipient_duns
     WHERE r.recipient_state_code LIKE 'PA%' 
     GROUP BY a.action_date_fiscal_year

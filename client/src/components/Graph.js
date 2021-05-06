@@ -11,79 +11,168 @@ export default class Graph extends React.Component {
 		super(props);
 		
 		this.state = {
-			obligated: [],
-			obligatedYear: [],
-			nonFedObligated: [],
-			nonFedYear: [],
-			selectedOption: 'option1',
-			graph_to_display: ''
+			// Param for contractSpendingAcrossYearsSumGroupBy
+			contractSum: [],
+			contractYear: [],
+			// Param for assistanceSpendingAcrossYearsSumGroupBy
+			assistSum: [],
+			assistYear: [],
+			// Param for contractPaSpendingByYear
+			paSum: [],
+			paYear: [],
+			// Param for contractAgencySpending
+			agencySpending: [],
+			agencyName: [],
+			// Param for contractRecipientType
+			recipientType: [],
+			recipientSum: [],
+			// Param for controlling radio button selection
+			selectedOption: 'option1'
 		};
 
 		this.handleOptionChange = this.handleOptionChange.bind(this);
 	};
 
-	// Here's my fetch function
+	// Default: option1, fetch contractSpendingAcrossYearsSumGroupBy, but everything else is also fetched
 	componentDidMount() {
 		// fetch("http://localhost:8000/assistTest2/").then(res => res.text()).then(text => console.log(text));
 
 		// Fetch fed obligation
-		fetch("http://localhost:8000/totalObligatedByYear/",
+		fetch("http://localhost:8000/contractSpendingAcrossYearsSumGroupBy/",
 		{  
 		  method: 'GET'
 		}).then(res => {
 			return res.json();
 		}, err => {
 		  console.log(err);
-		}).then(testList => {
-		  if (!testList) return;
-		  console.log(testList);
+		}).then(result => {
+		  if (!result) return;
+		  console.log(result);
 	
-		const year = testList.map((obligatedObj, i) =>
-			obligatedObj.year
+		const year = result.map((Obj, i) =>
+			Obj.year
 		);
 
-		const total = testList.map((obligatedObj, i) =>
-			obligatedObj.total
+		const total = result.map((Obj, i) =>
+			Obj.sum
 		);
 
 		  this.setState({
-			obligated: total,
-			obligatedYear: year
+			contractSum: total,
+			contractYear: year
 		  });
-
-		  console.log(this.state.obligated);
-		  console.log(this.state.obligatedYear);
 		}, err => {
 		  console.log(err);
 		});	
 
-		// Fetch nonFed obligation
-		fetch("http://localhost:8000/nonFedByYear/",
+		// Fetch assistanceSpendingAcrossYearsSumGroupBy
+		fetch("http://localhost:8000/assistanceSpendingAcrossYearsSumGroupBy/",
 		{  
 		  method: 'GET'
 		}).then(res => {
 			return res.json();
 		}, err => {
 		  console.log(err);
-		}).then(testList => {
-		  if (!testList) return;
-		  console.log(testList);
+		}).then(result => {
+		  if (!result) return;
+		  console.log(result);
 	
-		const year = testList.map((obligatedObj, i) =>
-			obligatedObj.year
+		const year = result.map((Obj, i) =>
+			Obj.year
 		);
 
-		const total = testList.map((obligatedObj, i) =>
-			obligatedObj.total
+		const total = result.map((Obj, i) =>
+			Obj.sum
 		);
 
 		  this.setState({
-			nonFedObligated: total,
-			nonFedYear: year
+			assistSum: total,
+			assistYear: year
 		  });
+		}, err => {
+		  console.log(err);
+		});	
 
-		  console.log(this.state.obligated);
-		  console.log(this.state.obligatedYear);
+		// Fetch contractPaSpendingByYear
+		fetch("http://localhost:8000/contractPaSpendingByYear/",
+		{  
+		  method: 'GET'
+		}).then(res => {
+			return res.json();
+		}, err => {
+		  console.log(err);
+		}).then(result => {
+		  if (!result) return;
+		  console.log(result);
+	
+		const year = result.map((Obj, i) =>
+			Obj.year
+		);
+
+		const total = result.map((Obj, i) =>
+			Obj.sum
+		);
+
+		  this.setState({
+			paSum: total,
+			paYear: year
+		  });
+		}, err => {
+		  console.log(err);
+		});	
+
+		// Fetch contractAgencySpending
+		fetch("http://localhost:8000/contractAgencySpending/",
+		{  
+		  method: 'GET'
+		}).then(res => {
+			return res.json();
+		}, err => {
+		  console.log(err);
+		}).then(result => {
+		  if (!result) return;
+		  console.log(result);
+	
+		const name = result.map((Obj, i) =>
+			Obj.name
+		);
+
+		const total = result.map((Obj, i) =>
+			Obj.sum
+		);
+
+		  this.setState({
+			agencySpending: total,
+			agencyName: name
+		  });
+		}, err => {
+		  console.log(err);
+		});	
+
+		// Fetch contractRecipientType
+		fetch("http://localhost:8000/contractRecipientType/",
+		{  
+		  method: 'GET'
+		}).then(res => {
+			return res.json();
+		}, err => {
+		  console.log(err);
+		}).then(result => {
+		  if (!result) return;
+		  console.log(result);
+	
+		const type = result.map((Obj, i) =>
+			Obj.type
+		);
+
+		const total = result.map((Obj, i) =>
+			Obj.sum
+		);
+
+		  this.setState({
+			recipientSum: total,
+			recipientType: type
+		  });
 		}, err => {
 		  console.log(err);
 		});	
@@ -96,43 +185,86 @@ export default class Graph extends React.Component {
 	};
 
 
-	option_1_plot() {
+	// Plot for contractSpendingAcrossYearsSumGroupBy
+	contractSpendingAcrossYearsSumGroupBy() {
 		return <Plot
 				data={[
 				{
-					x: this.state.obligatedYear,
-					y: this.state.obligated,
+					x: this.state.contractYear,
+					y: this.state.contractSum,
 					type: 'scatter',
 					mode: 'lines+markers',
 					marker: {color: 'red'},
 				},
-				{type: 'bar', x: this.state.obligatedYear, y: this.state.obligated},
 				]}
-				layout={ {width: 500, height: 500, title: 'Federal Total Obligated Spending By Year'} }
+				layout={ {width: 500, height: 500, title: 'Total Contract Spending By Year'} }
 			/>
 	}
 
-	option_2_plot() {
+	// Plot for assistanceSpendingAcrossYearsSumGroupBy
+	assistanceSpendingAcrossYearsSumGroupBy() {
 		return <Plot
 			data={[
 			{
-				x: this.state.nonFedYear,
-				y: this.state.nonFedObligated,
+				x: this.state.assistYear,
+				y: this.state.assistSum,
 				type: 'scatter',
 				mode: 'lines+markers',
 				marker: {color: 'red'},
 			},
-			{type: 'bar', x: this.state.nonFedYear, y: this.state.nonFedObligated},
 			]}
-			layout={ {width: 500, height: 500, title: 'Non-Federal Total Obligated Spending By Year'} }
+			layout={ {width: 500, height: 500, title: 'Total Assistance Spending By Year'} }
 		/>
 	}
 
+	// Plot for contractPaSpendingByYear
+	contractPaSpendingByYear() {
+		return <Plot
+		data={[
+		{
+			x: this.state.paYear,
+			y: this.state.paSum,
+			type: 'scatter',
+			mode: 'lines+markers',
+			marker: {color: 'red'},
+		},
+		]}
+		layout={ {width: 500, height: 500, title: 'Total PA Contract Spending By Year'} }
+	/>
+	}
+
+	// Plot for contractAgencySpending
+	contractAgencySpending() {
+		return <Plot
+		data={[
+		{type: 'bar', x: this.state.agencyName, y: this.state.agencySpending}
+		]}
+		layout={ {width: 600, height: 600, title: 'Total Contract Agency Spending By Year'} }
+	/>
+	}
+
+	// Plot for contractRecipientType
+	contractRecipientType() {
+		return <Plot
+		data={[
+		{type: 'pie', values: this.state.recipientSum, labels: this.state.recipientType}
+		]}
+		layout={ {width: 500, height: 500, title: 'Total Contract Recipient Spending By Year'} }
+	/>
+	}
+
+
 	Graph() {
 		if (this.state.selectedOption == 'option1') {
-			return this.option_1_plot();
+			return this.contractSpendingAcrossYearsSumGroupBy();
 		} else if (this.state.selectedOption == 'option2') {
-			return this.option_2_plot();
+			return this.assistanceSpendingAcrossYearsSumGroupBy();
+		} else if (this.state.selectedOption == 'option3') {
+			return this.contractPaSpendingByYear();
+		} else if (this.state.selectedOption == 'option4') {
+			return this.contractAgencySpending();
+		} else if (this.state.selectedOption == 'option5') {
+			return this.contractRecipientType();
 		}
 	}
 	
@@ -150,21 +282,35 @@ export default class Graph extends React.Component {
 						<label>
 							<input type="radio" value="option1" checked={this.state.selectedOption === 'option1'} 
 								onChange={this.handleOptionChange} />
-							Option 1
+							View Total Contract Spending Across Year
 						</label>
 						</div>
 						<div className="radio">
 						<label>
 							<input type="radio" value="option2" checked={this.state.selectedOption === 'option2'} 
 								onChange={this.handleOptionChange} />
-							Option 2
+							View Total Assistance Spending Across Year
 						</label>
 						</div>
 						<div className="radio">
 						<label>
 							<input type="radio" value="option3" checked={this.state.selectedOption === 'option3'}
 								onChange={this.handleOptionChange} />
-							Option 3
+							View PA Contract Spending Across Year
+						</label>
+						</div>
+						<div className="radio">
+						<label>
+							<input type="radio" value="option4" checked={this.state.selectedOption === 'option4'}
+								onChange={this.handleOptionChange} />
+							View Spending by Agency in Contract
+						</label>
+						</div>
+						<div className="radio">
+						<label>
+							<input type="radio" value="option5" checked={this.state.selectedOption === 'option5'}
+								onChange={this.handleOptionChange} />
+							View Spending by Recipient in Contract
 						</label>
 						</div>
 					</form>

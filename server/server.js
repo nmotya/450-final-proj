@@ -5,11 +5,7 @@ const bodyParser = require('body-parser');
 var routes = require("./routes.js");
 const cors = require('cors');
 
-<<<<<<< HEAD
-app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
-=======
 app.use(cors({credentials: true, origin: `http://localhost:3000`}));
->>>>>>> 5253d06380ab3da7a2f2240d40166899d2513c48
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
@@ -29,18 +25,6 @@ app.get('/contractLargestStateAward/:agency', routes.contractLargestStateAward);
 
 app.get('/contractCovidAward/', routes.contractCovidAward);
 
-<<<<<<< HEAD
-app.get('/assistanceTrans_2018/', routes.assistanceTrans_2018);
-
-app.get('/assistTest/', routes.assistTest);
-
-app.get('/assistTest2/', routes.assistTest2);
-
-app.get('/totalObligatedByYear/', routes.totalObligatedByYear);
-
-app.get('/nonFedByYear/', routes.nonFedByYear);
-
-=======
 app.get('/assistanceSpendingAcrossYears/:year1/:year2', routes.assistanceSpendingAcrossYears);
 
 app.get('/assistanceSpendingAcrossYearsSum/:year1/:year2', routes.assistanceSpendingAcrossYearsSum);
@@ -73,10 +57,9 @@ app.get('/contractsTotalAmountSpentState/:year1/:year2', routes.contractsTotalAm
 
 app.get('/contractPaSpendingByYear/', routes.contractPaSpendingByYear);
 
-app.get('/assistanceSpendingAcrossYearsSumGroupBy/', routes.assistanceSpendingAcrossYearsSumGroupBy);
+app.get('/contractSpendingAcrossYearsSumGroupBy/', routes.assistanceSpendingAcrossYearsSumGroupBy);
 
 app.get('/contractSpendingAcrossYearsSumGroupBy/', routes.contractSpendingAcrossYearsSumGroupBy);
->>>>>>> 5253d06380ab3da7a2f2240d40166899d2513c48
 app.listen(port, () => {
   console.log(`App running on port ${port}`)
 });
