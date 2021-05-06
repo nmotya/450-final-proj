@@ -7,8 +7,8 @@ export default class Home extends React.Component {
 	render() {
 		document.body.classList.add('backgroundImg');
 		return (
-            <>
-                <Navbar />
+      <>
+        <Navbar />
 				<div id="homeWrapper">
 					<div id="homeTextWrapper">
 						<h2 style={{fontWeight:"bold"}}>You deserve to know how your tax dollars are spent.</h2>
@@ -26,9 +26,8 @@ export default class Home extends React.Component {
 							<p>Albert, Kevin, Yi, and Nassim</p>
 						</div>
 					</div>
-
 				</div>
-            </>
+      </>
 		);
 	};
 };
