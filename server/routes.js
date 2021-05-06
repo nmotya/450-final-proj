@@ -442,6 +442,27 @@ const contractsTotalAmountSpentState = (req, res) => {
   });
 };
 
+
+const contractStateAgencyMax = (req, res) => {
+  const year = req.params.year;
+  const query = `
+    WITH sumAgency AS (SELECT sum(a.potential_total_value_of_award) as pot, s.awarding_agency_name, r.recipient_state_code
+    FROM Awards a JOIN Source s ON a.awarding_agency_code_award = s.awarding_agency_code 
+    JOIN Recipient r ON a.recipient_duns_award = r.recipient_duns
+    WHERE a.action_date_fiscal_year = ${year}
+    GROUP BY s.awarding_agency_name, r.recipient_state_code)
+    SELECT max(pot) as sum, awarding_agency_name as awarder, recipient_state_code as state
+    FROM sumAgency
+    GROUP BY recipient_state_code
+  `;
+
+  connectionContract.query(query, (err, rows, fields) => {
+    if (err) console.log(err);
+    else res.json(rows);
+  });
+};
+
+
 const insertIntoSurvey = (req, res) => {
   const data = req.body;
   const USDA = data.USDA;
@@ -499,5 +520,6 @@ module.exports = {
     //add routes for Graph
     assistanceSpendingAcrossYearsSumGroupBy: assistanceSpendingAcrossYearsSumGroupBy,
     contractSpendingAcrossYearsSumGroupBy, contractSpendingAcrossYearsSumGroupBy,
-    insertIntoSurvey: insertIntoSurvey
+    insertIntoSurvey: insertIntoSurvey,
+    contractStateAgencyMax
 };

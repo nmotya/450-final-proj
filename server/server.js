@@ -55,11 +55,14 @@ app.get('/assistanceTotalAmountSpentState/:year1/:year2', routes.assistanceTotal
 
 app.get('/contractsTotalAmountSpentState/:year1/:year2', routes.contractsTotalAmountSpentState);
 
+app.get('/contractStateAgencyMax/:year', routes.contractStateAgencyMax);
+
 app.get('/contractPaSpendingByYear/', routes.contractPaSpendingByYear);
 
 app.get('/assistanceSpendingAcrossYearsSumGroupBy/', routes.assistanceSpendingAcrossYearsSumGroupBy);
 
 app.get('/contractSpendingAcrossYearsSumGroupBy/', routes.contractSpendingAcrossYearsSumGroupBy);
+
 
 app.post('/insertIntoSurvey/', routes.insertIntoSurvey);
 app.listen(port, () => {
