@@ -60,6 +60,8 @@ app.get('/contractPaSpendingByYear/', routes.contractPaSpendingByYear);
 app.get('/assistanceSpendingAcrossYearsSumGroupBy/', routes.assistanceSpendingAcrossYearsSumGroupBy);
 
 app.get('/contractSpendingAcrossYearsSumGroupBy/', routes.contractSpendingAcrossYearsSumGroupBy);
+
+app.post('/insertIntoSurvey/', routes.insertIntoSurvey);
 app.listen(port, () => {
   console.log(`App running on port ${port}`)
 });

@@ -5,8 +5,7 @@ config.connectionLimit = 10;
 //Use connectionContract when querying contracts, assistance when querying assistance. See test examples below.
 const connectionContract = mysql.createPool(config.Contracts);
 const connectionAssistance = mysql.createPool(config.Assistance);
-
-
+const connectionSurvey = mysql.createPool(config.Survey)
 
 const contractSpendingAcrossYears = (req, res) => {
   const year1 = req.params.year1;
@@ -443,6 +442,34 @@ const contractsTotalAmountSpentState = (req, res) => {
   });
 };
 
+const insertIntoSurvey = (req, res) => {
+  const data = req.body;
+  const USDA = data.USDA;
+  const DOC = data.DOC;
+  const DOD = data.DOD;
+  const ED = data.ED;
+  const DOE = data.DOE;
+  const HHS = data.HHS;
+  const DHS = data.DHS;
+  const DOJ = data.DOJ;
+  const VA = data.VA;
+  const TREAS = data.TREAS;
+  const percentAreGiven = data.percentAreGiven;
+  const percentShouldBeGiven = data.percentShouldBeGiven;
+  const percentToCovidRelief = data.percentToCovidRelief;
+  const Equally = data.Equally;
+  const Proportionate_to_population = data.Proportionate_to_population;
+  const Proportionate_to_spending = data.Proportionate_to_spending;
+  const query = `INSERT INTO cleaned_survey_data 
+                (USDA, DOC, DOD, ED, DOE, HHS, DHS, DOJ, VA, TREAS, percentAreGiven, percentShouldBeGiven, percentToCovidRelief, Equally, Proportionate_to_population, Proportionate_to_spending) 
+          VALUES (${USDA}, ${DOC}, ${DOD}, ${ED}, ${DOE}, ${HHS}, ${DHS}, ${DOJ}, ${VA}, ${TREAS}, ${percentAreGiven}, ${percentShouldBeGiven}, ${percentToCovidRelief}, ${Equally}, ${Proportionate_to_population}, ${Proportionate_to_spending})`;
+
+  connectionSurvey.query(query, (err, rows, fields) => {
+    if (err) console.log(err);
+    else res.json(rows);
+  });
+}
+
 
 module.exports = {
     contractSpendingAcrossYears: contractSpendingAcrossYears,
@@ -471,5 +498,6 @@ module.exports = {
     contractPaSpendingByYear: contractPaSpendingByYear,
     //add routes for Graph
     assistanceSpendingAcrossYearsSumGroupBy: assistanceSpendingAcrossYearsSumGroupBy,
-    contractSpendingAcrossYearsSumGroupBy, contractSpendingAcrossYearsSumGroupBy
+    contractSpendingAcrossYearsSumGroupBy, contractSpendingAcrossYearsSumGroupBy,
+    insertIntoSurvey: insertIntoSurvey
 };

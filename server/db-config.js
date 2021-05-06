@@ -12,5 +12,13 @@ module.exports = {
     password: "9oTM5rb2l4",
     database: "Assistance",
     port: "3306"
-}};
+  },
+  Survey: {
+    host: "cis550-federal-spending.c9fvpp46zrjj.us-east-2.rds.amazonaws.com",
+    user: "admin",
+    password: "9oTM5rb2l4",
+    database: "Survey",
+    port: "3306"
+  }
+};
   
