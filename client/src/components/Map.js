@@ -243,7 +243,7 @@ const Map = ({ setTooltipContent }) => {
             }
           </div>
         </>
-        <ComposableMap data-tip="" projectionConfig={{ scale: 800 }} projection="geoAlbersUsa" id="mapDiv">
+        <ComposableMap data-tip="" projectionConfig={dataset === 'Contracts' ? { scale: 1000 } : { scale: 800 }} projection="geoAlbersUsa" id="mapDiv" style={dataset === 'Contracts' ? {marginTop: "-4%", marginLeft: "10%"} : {marginTop: "-10%"}}>
           {stateArray ?
             <Geographies geography={geoUrl} style={{position: "absolute", top: 0}}>
               {({ geographies }) =>
