@@ -37,6 +37,8 @@ app.get('/assistTest2/', routes.assistTest2);
 
 app.get('/totalObligatedByYear/', routes.totalObligatedByYear);
 
+app.get('/nonFedByYear/', routes.nonFedByYear);
+
 app.listen(port, () => {
   console.log(`App running on port ${port}`)
 });

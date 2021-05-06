@@ -160,41 +160,7 @@ const contractCovidAward = (req, res) => {
       else res.json(rows);
     });
   }; 
-
-const assistanceTrans_2018 = (req, res) => {
-    const query = `SELECT action_date_fiscal_year AS year, total_obligated_amount AS amount
-      FROM transaction WHERE action_date_fiscal_year = 2018 LIMIT 100;`;
-    connectionAssistance.query(query, (err, rows, fields) => {
-        if (err) console.log(err);
-        else res.json(rows);
-    });
-}
-
-const assistTest = (req, res) => {
-  const query =  `SELECT total_obligated_amount AS amount FROM transaction LIMIT 100 `;
-  connectionAssistance.query(query, (err, rows, fields) => {
-    if (err) console.log(err);
-    else res.json(rows);
-  });
-}
-
-const assistTest2 = (req, res) => {
-  const query =  `SELECT * FROM state`;
-  connectionAssistance.query(query, (err, rows, fields) => {
-    if (err) console.log(err);
-    else res.json(rows);
-  });
-}
-
-const totalObligatedByYear = (req, res) => {
-  const query =  `SELECT SUM(total_obligated_amount) AS total, action_date_fiscal_year AS year
-         FROM transaction GROUP BY action_date_fiscal_year;`;
-  connectionAssistance.query(query, (err, rows, fields) => {
-    if (err) console.log(err);
-    else res.json(rows);
-  });
-}
-
+  
 module.exports = {
     test: test,
     test1: test1,
@@ -206,9 +172,10 @@ module.exports = {
     contractStateSpending: contractStateSpending,
     contractLargestStateAward: contractLargestStateAward,
     contractCovidAward: contractCovidAward,
-    assistanceTrans_2018: assistanceTrans_2018,
-    assistTest: assistTest,
-    assistTest2: assistTest2,
-    totalObligatedByYear: totalObligatedByYear
+    contractSpendingAcrossYears: contractSpendingAcrossYears,
+    contractSpendingAcrossYearsSumGroupBy: contractSpendingAcrossYearsSumGroupBy,
+    assistanceSpendingAcrossYearsSumGroupBy: assistanceSpendingAcrossYearsSumGroupBy,
+    contractPaSpendingByYear: contractPaSpendingByYear
+
     
 };
