@@ -57,7 +57,7 @@ app.get('/contractsTotalAmountSpentState/:year1/:year2', routes.contractsTotalAm
 
 app.get('/contractPaSpendingByYear/', routes.contractPaSpendingByYear);
 
-app.get('/contractSpendingAcrossYearsSumGroupBy/', routes.assistanceSpendingAcrossYearsSumGroupBy);
+app.get('/assistanceSpendingAcrossYearsSumGroupBy/', routes.assistanceSpendingAcrossYearsSumGroupBy);
 
 app.get('/contractSpendingAcrossYearsSumGroupBy/', routes.contractSpendingAcrossYearsSumGroupBy);
 app.listen(port, () => {

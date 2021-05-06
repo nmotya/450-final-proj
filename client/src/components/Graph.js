@@ -89,6 +89,9 @@ export default class Graph extends React.Component {
 			assistSum: total,
 			assistYear: year
 		  });
+		  console.log("Fetch assistSpending")
+		  console.log(this.state.assistSum);
+		  console.log(this.state.assistYear);
 		}, err => {
 		  console.log(err);
 		});	
@@ -189,13 +192,7 @@ export default class Graph extends React.Component {
 	contractSpendingAcrossYearsSumGroupBy() {
 		return <Plot
 				data={[
-				{
-					x: this.state.contractYear,
-					y: this.state.contractSum,
-					type: 'scatter',
-					mode: 'lines+markers',
-					marker: {color: 'red'},
-				},
+				{type: 'bar', x: this.state.contractYear, y: this.state.contractSum}
 				]}
 				layout={ {width: 500, height: 500, title: 'Total Contract Spending By Year'} }
 			/>
@@ -221,13 +218,7 @@ export default class Graph extends React.Component {
 	contractPaSpendingByYear() {
 		return <Plot
 		data={[
-		{
-			x: this.state.paYear,
-			y: this.state.paSum,
-			type: 'scatter',
-			mode: 'lines+markers',
-			marker: {color: 'red'},
-		},
+		{type: 'bar', x: this.state.paYear, y: this.state.paSum}
 		]}
 		layout={ {width: 500, height: 500, title: 'Total PA Contract Spending By Year'} }
 	/>
@@ -239,7 +230,7 @@ export default class Graph extends React.Component {
 		data={[
 		{type: 'bar', x: this.state.agencyName, y: this.state.agencySpending}
 		]}
-		layout={ {width: 600, height: 600, title: 'Total Contract Agency Spending By Year'} }
+		layout={ {width: 600, height: 600, title: 'Total Contract Spending by Agency'} }
 	/>
 	}
 
@@ -249,7 +240,7 @@ export default class Graph extends React.Component {
 		data={[
 		{type: 'pie', values: this.state.recipientSum, labels: this.state.recipientType}
 		]}
-		layout={ {width: 500, height: 500, title: 'Total Contract Recipient Spending By Year'} }
+		layout={ {width: 500, height: 500, title: 'Total Contract Recipient Spending Percentage'} }
 	/>
 	}
 
