@@ -263,8 +263,7 @@ export default class Graph extends React.Component {
 		return (
             <>
                 <Navbar />
-
-				<div className="container">
+				<div className="graph-container">
 				<div className="row">
 					<div className="col-sm-12">
 
@@ -308,9 +307,10 @@ export default class Graph extends React.Component {
 
 					</div>
 				</div>
-				</div>
+				
 
 				<div>{this.Graph()}</div>
+				</div>
 				
 
             </>
