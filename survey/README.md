@@ -1,6 +1,6 @@
 <h1> Government spending survey data, conducted on Mechanical Turk </h1>
 
-Questions:
+Questions: <br>
 During times in which no particular state has a major crisis, how do you believe federal
 spending should be distributed among U.S. states?
 a.) Equally
