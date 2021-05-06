@@ -4,7 +4,8 @@ import {
   getContractOrganizationStateHighest,
   getAssistanceAreaofworkStateExists,
   getAssistanceTotalAmountSpentState,
-  getContractsTotalAmountSpentState
+  getContractsTotalAmountSpentState,
+  getContractStateAgencyMax
 } from '../helper_functions/Map';
 import { state_dict } from '../helper_functions/state_dict';
 import Navbar from './Navbar'
@@ -27,6 +28,7 @@ const Map = ({ setTooltipContent }) => {
   const [query1year1, setQuery1year1] = useState(2018);
   const [query1year2, setQuery1year2] = useState(2021);
   const [query2year, setQuery2year] = useState(2018);
+  const [query3year, setQuery3year] = useState(2018);
   const [query4year1, setQuery4year1] = useState(2018);
   const [query4year2, setQuery4year2] = useState(2021);
   const [query5year, setQuery5year] = useState(2018);
@@ -75,7 +77,7 @@ const Map = ({ setTooltipContent }) => {
             <Tab eventKey="contracts"  title="Contracts" /> 
             <Tab eventKey="Financial Assistance" title="Financial Assistance"/>
           </Tabs>
-          <div id="mapQueryWrapper" className="d-flex justify-content-center" style={dataset === 'Contracts'? {height: "67%", minHeight: "35rem"} : null}>
+          <div id="mapQueryWrapper" className="d-flex justify-content-center">
             { 
               dataset === 'Contracts' ?
               <>
@@ -132,6 +134,29 @@ const Map = ({ setTooltipContent }) => {
                   style={{marginTop: "1rem"}} 
                   onClick={() => {
                     contractQuery(getContractOrganizationStateHighest(query2year));
+                  }}
+                >
+                  Submit
+                </Button>
+                <div className="line-break" />
+                <div className="borderDiv" />
+
+                <h3>Query Option 3:</h3>
+                <div className="line-break" />
+                <p className="queryDescription">The department that awards the most money for each state in a given year</p>
+                <div className="line-break" />
+                <DropdownButton onSelect={(e) => handleSelect(e, setQuery3year)} title={query3year}>
+                  <Dropdown.Item eventKey= "2018">2018</Dropdown.Item>
+                  <Dropdown.Item eventKey= "2019">2019</Dropdown.Item>
+                  <Dropdown.Item eventKey= "2020">2020</Dropdown.Item>
+                  <Dropdown.Item eventKey= "2021">2021</Dropdown.Item>
+                </DropdownButton> 
+                <div className="line-break" />
+                <Button 
+                  variant="primary" 
+                  style={{marginTop: "1rem"}} 
+                  onClick={() => {
+                    contractQuery(getContractStateAgencyMax(query3year));
                   }}
                 >
                   Submit
@@ -239,7 +264,7 @@ const Map = ({ setTooltipContent }) => {
             }
           </div>
         </>
-        <ComposableMap data-tip="" projectionConfig={dataset === 'Contracts' ? { scale: 1000 } : { scale: 800 }} projection="geoAlbersUsa" id="mapDiv" style={dataset === 'Contracts' ? {marginTop: "-4%", marginLeft: "10%"} : {marginTop: "-10%"}}>
+        <ComposableMap data-tip="" projectionConfig={dataset === 'Contracts' ? { scale: 800 } : { scale: 800 }} projection="geoAlbersUsa" id="mapDiv" style={{marginTop: "-10%"}}>
           {stateArray ?
             <Geographies geography={geoUrl} style={{position: "absolute", top: 0}}>
               {({ geographies }) =>
@@ -274,6 +299,12 @@ const Map = ({ setTooltipContent }) => {
                             setTooltipContent(`
                               <div style="text-align: center">${name}</div>
                               <div style="text-align: center">${cur.recipient}</div> 
+                              <div style="text-align: center">$${cur.sum.toLocaleString()}</div>
+                            `);
+                          } else if (cur.awarder) {
+                            setTooltipContent(`
+                              <div style="text-align: center">${name}</div>
+                              <div style="text-align: center">${cur.awarder}</div> 
                               <div style="text-align: center">$${cur.sum.toLocaleString()}</div>
                             `);
                           } else {

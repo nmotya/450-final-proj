@@ -47,11 +47,20 @@ async function getContractsTotalAmountSpentState(year1, year2) {
   }
 }
 
+async function getContractStateAgencyMax(year) {
+  try {
+    const response = await (await fetch(`${url}/contractStateAgencyMax/${year}`)).json();
+    return response;
+  } catch (e) {
+    return e;
+  }
+}
+
 
 module.exports = { 
   getAssistanceAreaofworkStateHighest, 
   getContractOrganizationStateHighest,
   getAssistanceAreaofworkStateExists,
   getAssistanceTotalAmountSpentState,
-  getContractsTotalAmountSpentState
+  getContractStateAgencyMax
 };
