@@ -1,3 +1,4 @@
+// Used to convert state abbreviations to state names
 var state_dict = {
     "AL": "Alabama",
     "AK": "Alaska",

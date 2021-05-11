@@ -35,7 +35,6 @@ export default class Graph extends React.Component {
 
 	// Default: option1, fetch contractSpendingAcrossYearsSumGroupBy, but everything else is also fetched
 	componentDidMount() {
-		// fetch("http://localhost:8000/assistTest2/").then(res => res.text()).then(text => console.log(text));
 
 		// Fetch fed obligation
 		fetch("http://localhost:8000/contractSpendingAcrossYearsSumGroupBy/",

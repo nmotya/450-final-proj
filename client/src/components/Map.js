@@ -1,4 +1,4 @@
-import React, { memo, useState, useEffect, useDebugValue } from "react";
+import React, { memo, useState } from "react";
 import { 
   getAssistanceAreaofworkStateHighest, 
   getContractOrganizationStateHighest,
@@ -11,7 +11,6 @@ import { state_dict } from '../helper_functions/state_dict';
 import Navbar from './Navbar'
 import { scaleQuantile } from "d3-scale";
 import {
-  ZoomableGroup,
   ComposableMap,
   Geographies,
   Geography
@@ -25,6 +24,7 @@ const Map = ({ setTooltipContent }) => {
   const [isLoading, setIsLoading] = useState(false);  
   const [stateArray, setStateArray] = useState();  
   const [dataset, setDataset] = useState('Contracts');
+  // Set default values for form dropdowns
   const [query1year1, setQuery1year1] = useState(2018);
   const [query1year2, setQuery1year2] = useState(2021);
   const [query2year, setQuery2year] = useState(2018);
@@ -35,12 +35,7 @@ const Map = ({ setTooltipContent }) => {
   const [query6year, setQuery6year] = useState(2018);
   const [query6aow, setQuery6aow] = useState("AGRICULTURAL RESEARCH BASIC AND APPLIED RESEARCH");
 
-
-
-  function handleSelect(e, func){
-    func(e);
-  }
-
+  // Handles queries for the contract database
   function contractQuery(func) {
     setStateArray(null);
     setIsLoading(true);
@@ -54,7 +49,7 @@ const Map = ({ setTooltipContent }) => {
     });
   }
 
-
+  // Handles queries for the assistance database
   function assistanceQuery(func) {
     setStateArray(null);
     setIsLoading(true);
@@ -80,6 +75,7 @@ const Map = ({ setTooltipContent }) => {
           <div id="mapQueryWrapper" className="d-flex justify-content-center">
             { 
               dataset === 'Contracts' ?
+              // render either the contracts menu or the assistance menu
               <>
                 <h3>Query Option 1:</h3>
                 <div className="line-break" />
@@ -87,7 +83,7 @@ const Map = ({ setTooltipContent }) => {
                 <div className="line-break" />
                 <Row>
                   <Col>
-                    <DropdownButton onSelect={(e) => handleSelect(e, setQuery1year1)} title={query1year1}>
+                    <DropdownButton onSelect={(e) => setQuery1year1(e)} title={query1year1}>
                       <Dropdown.Item eventKey= "2018">2018</Dropdown.Item>
                       <Dropdown.Item eventKey= "2019">2019</Dropdown.Item>
                       <Dropdown.Item eventKey= "2020">2020</Dropdown.Item>
@@ -95,7 +91,7 @@ const Map = ({ setTooltipContent }) => {
                     </DropdownButton> 
                   </Col>
                   <Col lg={5} style={{marginRight: "-8%"}}>
-                    <DropdownButton onSelect={(e) => handleSelect(e, setQuery1year2)} title={query1year2}>
+                    <DropdownButton onSelect={(e) => setQuery1year2(e)} title={query1year2}>
                       <Dropdown.Item eventKey= "2018">2018</Dropdown.Item>
                       <Dropdown.Item eventKey= "2019">2019</Dropdown.Item>
                       <Dropdown.Item eventKey= "2020">2020</Dropdown.Item>
@@ -122,7 +118,7 @@ const Map = ({ setTooltipContent }) => {
                 <div className="line-break" />
                 <p className="queryDescription">The organization that received the most contract spending in each state for a given year</p>
                 <div className="line-break" />
-                <DropdownButton onSelect={(e) => handleSelect(e, setQuery2year)} title={query2year}>
+                <DropdownButton onSelect={(e) => setQuery2year(e)} title={query2year}>
                   <Dropdown.Item eventKey= "2018">2018</Dropdown.Item>
                   <Dropdown.Item eventKey= "2019">2019</Dropdown.Item>
                   <Dropdown.Item eventKey= "2020">2020</Dropdown.Item>
@@ -145,7 +141,7 @@ const Map = ({ setTooltipContent }) => {
                 <div className="line-break" />
                 <p className="queryDescription">The department that awards the most money for each state in a given year</p>
                 <div className="line-break" />
-                <DropdownButton onSelect={(e) => handleSelect(e, setQuery3year)} title={query3year}>
+                <DropdownButton onSelect={(e) => setQuery3year(e)} title={query3year}>
                   <Dropdown.Item eventKey= "2018">2018</Dropdown.Item>
                   <Dropdown.Item eventKey= "2019">2019</Dropdown.Item>
                   <Dropdown.Item eventKey= "2020">2020</Dropdown.Item>
@@ -170,7 +166,7 @@ const Map = ({ setTooltipContent }) => {
                 <div className="line-break" />
                 <Row>
                   <Col>
-                    <DropdownButton onSelect={(e) => handleSelect(e, setQuery4year1)} title={query4year1}>
+                    <DropdownButton onSelect={(e) => setQuery4year1(e)} title={query4year1}>
                       <Dropdown.Item eventKey= "2018">2018</Dropdown.Item>
                       <Dropdown.Item eventKey= "2019">2019</Dropdown.Item>
                       <Dropdown.Item eventKey= "2020">2020</Dropdown.Item>
@@ -178,7 +174,7 @@ const Map = ({ setTooltipContent }) => {
                     </DropdownButton> 
                   </Col>
                   <Col lg={5} style={{marginRight: "-8%"}}>
-                    <DropdownButton onSelect={(e) => handleSelect(e, setQuery4year2)} title={query4year2}>
+                    <DropdownButton onSelect={(e) => setQuery4year2(e)} title={query4year2}>
                       <Dropdown.Item eventKey= "2018">2018</Dropdown.Item>
                       <Dropdown.Item eventKey= "2019">2019</Dropdown.Item>
                       <Dropdown.Item eventKey= "2020">2020</Dropdown.Item>
@@ -205,7 +201,7 @@ const Map = ({ setTooltipContent }) => {
                 <div className="line-break" />
                 <p className="queryDescription">The area of work that received the most financial assistance spending in each state for a given year</p>
                 <div className="line-break" />
-                <DropdownButton onSelect={(e) => handleSelect(e, setQuery5year)} title={query5year}>
+                <DropdownButton onSelect={(e) => setQuery5year(e)} title={query5year}>
                   <Dropdown.Item eventKey= "2018">2018</Dropdown.Item>
                   <Dropdown.Item eventKey= "2019">2019</Dropdown.Item>
                   <Dropdown.Item eventKey= "2020">2020</Dropdown.Item>
@@ -230,7 +226,7 @@ const Map = ({ setTooltipContent }) => {
                 <div className="line-break" />
                 <Row>
                   <Col>
-                    <DropdownButton onSelect={(e) => handleSelect(e, setQuery6year)} title={query6year}>
+                    <DropdownButton onSelect={(e) => setQuery6year(e)} title={query6year}>
                       <Dropdown.Item eventKey= "2018">2018</Dropdown.Item>
                       <Dropdown.Item eventKey= "2019">2019</Dropdown.Item>
                       <Dropdown.Item eventKey= "2020">2020</Dropdown.Item>
@@ -238,7 +234,7 @@ const Map = ({ setTooltipContent }) => {
                     </DropdownButton> 
                   </Col>
                   <Col lg={5}>
-                    <DropdownButton onSelect={(e) => handleSelect(e, setQuery6aow)} title={query6aow} id="buttonText">
+                    <DropdownButton onSelect={(e) => setQuery6aow(e)} title={query6aow} id="buttonText">
                       <Dropdown.Item eventKey= "AGRICULTURAL RESEARCH BASIC AND APPLIED RESEARCH">AGRICULTURAL RESEARCH BASIC AND APPLIED RESEARCH</Dropdown.Item>
                       <Dropdown.Item eventKey= "HIGH INTENSITY DRUG TRAFFICKING AREAS PROGRAM">HIGH INTENSITY DRUG TRAFFICKING AREAS PROGRAM</Dropdown.Item>
                       <Dropdown.Item eventKey= "DISASTER GRANTS - PUBLIC ASSISTANCE (PRESIDENTIALLY DECLARED DISASTERS)">DISASTER GRANTS - PUBLIC ASSISTANCE (PRESIDENTIALLY DECLARED DISASTERS)</Dropdown.Item>
@@ -268,6 +264,7 @@ const Map = ({ setTooltipContent }) => {
           {stateArray ?
             <Geographies geography={geoUrl} style={{position: "absolute", top: 0}}>
               {({ geographies }) =>
+                // assign colors to different monetary values
                 geographies.map(geo => {
                   const colorScale = scaleQuantile()
                     .domain(stateArray.map(s => s.sum))
@@ -282,6 +279,7 @@ const Map = ({ setTooltipContent }) => {
                       "#9a311f",
                       "#782618"
                   ]);
+                  // find state in query output
                   const cur = stateArray.find(s => s.state.toUpperCase() === geo.properties.name.toUpperCase());
                   return(
                     <Geography
@@ -291,6 +289,7 @@ const Map = ({ setTooltipContent }) => {
                       onMouseEnter={() => {
                         if (stateArray) {
                           const name = geo.properties.name;
+                          // set value for when you hover over a state with your mouse
                           if (!cur || !cur.sum) {
                             setTooltipContent(`
                               <div style="text-align: center">${name}</div>
@@ -314,7 +313,6 @@ const Map = ({ setTooltipContent }) => {
                             `);
                           }
                         }
-                        
                       }}
                       onMouseLeave={() => {
                         setTooltipContent("");
